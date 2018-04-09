@@ -1,0 +1,53 @@
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
+
+import imp,sys
+
+imp.reload(sys)
+from matplotlib.font_manager import FontProperties
+import jieba.analyse
+import matplotlib.pyplot as plt
+if __name__ == "__main__":
+
+    word_lst = []
+    key_list = []
+    for line in open('D://jieba_new.txt'):  # 1.txt是需要分词统计的文档
+
+        item = line.strip('\n\r').split('\t')  # 制表格切分
+        tags = jieba.analyse.extract_tags(item[0])  # jieba分词
+        for t in tags:
+            word_lst.append(t)
+
+    word_dict = {}
+    with open("D://word.txt", 'w') as wf2:  # 打开文件
+
+        for item in word_lst:
+            if item not in word_dict:  # 统计数量
+                word_dict[item] = 1
+            else:
+                word_dict[item] += 1
+
+        orderList = list(word_dict.values())
+        orderList.sort(reverse=True)
+        # print orderList
+        for i in range(len(orderList)):
+                for key in word_dict:
+                    if word_dict[key] == orderList[i]:
+                        if word_dict[key] > 1:
+                            wf2.write(key + ' ' + str(word_dict[key]) + '\n')  # 写入txt文档
+        tmp = open('D://word.txt').readlines()  # 把内容一次性全部读取出来 是一个列表
+        set(tmp)
+A = []
+B = []
+file = open('D:\\word1.txt')
+for r in file:
+    imporkey = r.split(' ')[0]
+    sumnumber = r.split(' ')[1]
+    int_imporkey = str(imporkey)
+    int_sumnumber = str(sumnumber)
+    A.append(int_imporkey)
+    B.append(int_sumnumber)
+fig = plt.figure()
+plt.pie(B,labels=A,autopct='%1.2f%%') #画饼图（数据，数据对应的标签，百分数保留两位小数点）
+plt.title("Pie chart")
+plt.show()
